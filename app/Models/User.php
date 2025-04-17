@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_id',
+        'phone', // Ajouté pour l'authentification par téléphone
+        'user_type', // 'buyer', 'seller', 'admin'
+        'rating', // Pour le système de notation
+        'address',
+        'city',
     ];
 
     /**
@@ -40,5 +46,11 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'rating' => 'decimal:1',
     ];
+
+    public function routeNotificationForTwilio()
+    {
+        return $this->phone;
+    }
 }
