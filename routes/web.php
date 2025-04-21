@@ -29,6 +29,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+Route::prefix('/')->group(function(){
+    Route::get('index', function(){ return view('index');});
+    Route::get('home2', function(){return view('home-02');});   
+    Route::get('home3',function(){return view('home-03');}); 
+    Route::get('about',function(){return view('about');}); 
+    Route::get('blog-detail',function(){return view('blog-detail');});
+    Route::get('contact',function(){return view('contact');});  
+    Route::get('product',function(){return view('product');});
+    Route::get('product-detail',function(){return view('product-detail');});
+    Route::get('shoping',function(){return view('shoping-cart');});
+    Route::get('blog',function(){return view('blog');});
+     
+});
+
+
+
 // Routes Google Auth
 Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);

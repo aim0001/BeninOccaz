@@ -11,7 +11,7 @@
 
         <!-- Bouton Google -->
         <div class="mt-6">
-            <a href="{{ route('google.login') }}"
+            <a href="{{ url('/google.login') }}"
                 class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-150">
                 <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
                     class="h-5 w-5 mr-2" alt="Google logo">
@@ -74,7 +74,7 @@
 
             <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
+                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ url('/password.request') }}">
                     {{ __('Mot de passe oublié?') }}
                 </a>
                 @endif
@@ -88,7 +88,7 @@
         <!-- Lien vers l'inscription -->
         <div class="text-center text-sm">
             <span class="text-gray-600 dark:text-gray-400">Pas encore de compte ?</span>
-            <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">
+            <a href="{{ url('/register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">
                 S'inscrire
             </a>
         </div>
