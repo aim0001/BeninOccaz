@@ -9,9 +9,9 @@
             </p>
         </div>
 
-        <!-- Bouton Google -->
+        <!-- Bouton Google - Correction de l'URL -->
         <div class="mt-6">
-            <a href="{{ url('/google.login') }}"
+            <a href="{{ route('google.login') }}"
                 class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition duration-150">
                 <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
                     class="h-5 w-5 mr-2" alt="Google logo">
@@ -31,26 +31,22 @@
             </div>
         </div>
 
-        <!-- Formulaire de connexion existant -->
+        <!-- Formulaire de connexion -->
         <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-6">
             @csrf
 
             <!-- Email Address -->
             <div>
                 <x-input-label for="email" :value="__('Email')" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
             <!-- Password -->
             <div class="relative">
-                <x-input-label for="password" :value="__('Password')" />
-                <x-text-input id="password"
-                    class="block w-full mt-1"
-                    type="password"
-                    name="password"
-                    required autocomplete="new-password" />
-
+                <x-input-label for="password" :value="__('Mot de passe')" />
+                <x-text-input id="password" class="block w-full mt-1" type="password" name="password" required autocomplete="current-password" />
+                
                 <!-- Icône pour afficher/masquer -->
                 <span class="absolute right-3 top-9 cursor-pointer" onclick="togglePassword('password')">
                     <svg id="eye-icon-password" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,50 +60,49 @@
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
-            <!-- Remember Me -->
-            <div class="block mt-4">
+            <!-- Remember Me & Forgot Password -->
+            <div class="flex items-center justify-between mt-4">
                 <label for="remember_me" class="inline-flex items-center">
                     <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
+                    <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Se souvenir de moi') }}</span>
                 </label>
-            </div>
 
-            <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ url('/password.request') }}">
-                    {{ __('Mot de passe oublié?') }}
+                <a class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" href="{{ route('password.request') }}">
+                    {{ __('Mot de passe oublié ?') }}
                 </a>
                 @endif
-
-                <x-primary-button class="ms-3">
-                    {{ __('connexion') }}
-                </x-primary-button>
             </div>
+
+            <x-primary-button class="w-full justify-center">
+                {{ __('Connexion') }}
+            </x-primary-button>
         </form>
 
         <!-- Lien vers l'inscription -->
         <div class="text-center text-sm">
             <span class="text-gray-600 dark:text-gray-400">Pas encore de compte ?</span>
-            <a href="{{ url('/register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">
+            <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 ml-1">
                 S'inscrire
             </a>
         </div>
     </div>
-    <script>
-    function togglePassword(fieldId) {
-        const field = document.getElementById(fieldId);
-        const eyeIcon = document.getElementById(`eye-icon-${fieldId}`);
-        const eyeSlashIcon = document.getElementById(`eye-slash-icon-${fieldId}`);
 
-        if (field.type === 'password') {
-            field.type = 'text';
-            eyeIcon.classList.add('hidden');
-            eyeSlashIcon.classList.remove('hidden');
-        } else {
-            field.type = 'password';
-            eyeIcon.classList.remove('hidden');
-            eyeSlashIcon.classList.add('hidden');
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const eyeIcon = document.getElementById(`eye-icon-${fieldId}`);
+            const eyeSlashIcon = document.getElementById(`eye-slash-icon-${fieldId}`);
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                eyeIcon.classList.add('hidden');
+                eyeSlashIcon.classList.remove('hidden');
+            } else {
+                field.type = 'password';
+                eyeIcon.classList.remove('hidden');
+                eyeSlashIcon.classList.add('hidden');
+            }
         }
-    }
-</script>
+    </script>
 </x-guest-layout>
