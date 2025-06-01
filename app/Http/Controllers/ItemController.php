@@ -13,14 +13,22 @@ class ItemController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     public function latest()
+{
+    $items = Item::latest()->limit(10)->get(); // Récupère les 10 derniers articles
+    return view('index', compact('items'));
+}
+
     public function index()
     {
-        $items = Item::available()
+         $items = Item::available()
+
             ->with('user')
             ->latest()
             ->paginate(12);
 
-        return view('items.index', compact('items'));
+        return view('product', compact('items'));
     }
 
     /**
@@ -48,6 +56,7 @@ class ItemController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'delivery_method' => 'required|in:' . implode(',', array_keys(Item::DELIVERY_METHODS)),
             'meetup_location' => 'nullable|string|max:255'
+            
         ]);
 
         // Traitement des images
@@ -80,7 +89,7 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        return view('items.show', [
+        return view('product-detail', [
             'item' => $item->load('user'),
             'similarItems' => Item::available()
                                 ->where('category', $item->category)
@@ -98,7 +107,7 @@ class ItemController extends Controller
     {
         $this->authorize('update', $item);
 
-        return view('items.edit', [
+        return view('form-edit', [
             'item' => $item,
             'conditions' => Item::CONDITIONS,
             'deliveryMethods' => Item::DELIVERY_METHODS

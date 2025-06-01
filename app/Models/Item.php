@@ -67,6 +67,18 @@ class Item extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Relation : Un article peut avoir plusieurs commandes
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    // Filtre les articles disponibles
+    public static function available()
+    {
+        return self::where('is_sold', false);
+    }
+
     /**
      * Accesseur pour les URLs complètes des images
      */
@@ -127,7 +139,7 @@ class Item extends Model
     public function scopeAvailable($query)
     {
         return $query->where('is_sold', false);
-    }
+    }   
 
     /**
      * Scope pour les articles d'une catégorie spécifique
@@ -144,4 +156,9 @@ class Item extends Model
     {
         return $query->where('delivery_method', $method);
     }
+    public function featured()
+{
+    return $this->hasOne(FeaturedItem::class);
+}
+
 }

@@ -36,7 +36,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token',       
     ];
 
     /**
@@ -53,4 +53,23 @@ class User extends Authenticatable
     {
         return $this->phone;
     }
+
+ // Relation : Un utilisateur peut avoir plusieurs annonces
+ public function items()
+ {
+     return $this->hasMany(Item::class);
+ }
+
+ // Relation : Un utilisateur peut envoyer plusieurs messages
+ public function messages()
+ {
+     return $this->hasMany(Message::class, 'sender_id');
+ }
+
+ // Relation : Un utilisateur peut avoir plusieurs commandes
+ public function orders()
+ {
+     return $this->hasMany(Order::class);
+ }
+
 }

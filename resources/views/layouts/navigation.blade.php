@@ -1,100 +1,90 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ url('/dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+<!-- MENU DESKTOP -->
+<div class="container-menu-desktop">
+	<div class="wrap-menu-desktop how-shadow1">
+		<nav class="limiter-menu-desktop container">
+			<!-- LOGO -->
+			<a href="{{ url('/') }}" class="logo">
+				<img src="{{ asset('images/icons/logo-transparent.png') }}" alt="IMG-LOGO" width="60%" height="100%">
+			</a>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-            </div>
+			<!-- MENU DESKTOP -->
+			<div class="menu-desktop">
+				<ul class="main-menu">
+					<li><a href="{{ url('/') }}">Accueil</a></li>
+					<li><a href="{{ url('/items') }}">Boutique</a></li>
+					<li><a href="{{ url('/about') }}">A propos</a></li>
+					<li><a href="{{ url('/contact') }}">Contact</a></li>
+				</ul>
+			</div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+			<!-- BARRE DE RECHERCHE + ICONES -->
+			<div class="wrap-icon-header flex-w flex-r-m">
+				<form action="{{ url('/search') }}" method="GET" class="search-bar-header">
+					<input type="text" name="query" placeholder="Rechercher..." class="input-search-header">
+					<button type="submit" class="btn-search-header"><i class="zmdi zmdi-search"></i></button>
+				</form>
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+				@auth
+					<!-- Icône panier -->
+					<div class="icon-header-item">
+						<a href="{{ url('/shopping-cart') }}"><i class="zmdi zmdi-shopping-cart"></i></a>
+					</div>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profil') }}
-                        </x-dropdown-link>
+					<!-- Icône notifications -->
+					<div class="icon-header-item js-show-notifications">
+						<a href="#"><i class="zmdi zmdi-notifications"></i></a>
+					</div>
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+					<!-- Icône favoris -->
+					<a href="#" class="icon-header-item">
+						<i class="zmdi zmdi-favorite-outline"></i>
+					</a>
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Se déconnecter') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+					<!-- Icône messages -->
+					<a href="#" class="icon-header-item">
+						<i class="zmdi zmdi-email"></i>
+					</a>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
+					<!-- Menu profil -->
+					<div class="profile-dropdown" id="profileDropdown">
+						<div class="profile-toggle" onclick="toggleProfileMenu()">
+							<img src="{{ asset('images/profile.png') }}" alt="Profil" class="profile-icon">
+							<i class="zmdi zmdi-chevron-down"></i>
+						</div>
+						<div class="profile-menu" id="profileMenu">
+							<a href="{{ url('/profile') }}"><i class="zmdi zmdi-account"></i> Mon profil</a>
+							<form method="POST" action="{{ route('logout') }}">
+								@csrf
+								<button type="submit"><i class="zmdi zmdi-power"></i> Déconnexion</button>
+							</form>
+						</div>
+					</div>
+				@endauth
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
+				@guest
+					<div class="profile-menu1 d-flex align-items-center">
+						<a href="{{ url('/login') }}" class="btn btn-dark px-3">Connexion</a>
+						<div class="mx-2" style="border-left: 2px solid #ccc; height: 25px;"></div>
+						<a href="{{ url('/register') }}" class="btn custom-btn px-3">Inscription</a>
+					</div>
+				@endguest
+			</div>
+		</nav>
+	</div>
+</div>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+<!-- Script menu déroulant du profil -->
+<script>
+	function toggleProfileMenu() {
+		const menu = document.getElementById('profileMenu');
+		menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+	}
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+	window.addEventListener('click', function(e) {
+		const dropdown = document.getElementById('profileDropdown');
+		const menu = document.getElementById('profileMenu');
+		if (!dropdown.contains(e.target)) {
+			menu.style.display = 'none';
+		}
+	});
+</script>
