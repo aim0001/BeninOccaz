@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('password.confirm');
 
 
+
     // 🔹 Gestion des annonces (Seuls les vendeurs peuvent modifier)
     Route::middleware('can:isSeller')->group(function () {
         Route::post('/items', [ItemController::class, 'store'])->name('items.store');
@@ -98,8 +99,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 // 🔹 Pages spécifiques (gérées via Blade mais statiques)
-Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
+Route::view('/about', 'about')->name('about');
+
 
 // 🔹 Pages supplémentaires (gérées via Blade)
 Route::view('/blog-detail', 'blog-detail')->name('blog-detail'); 
