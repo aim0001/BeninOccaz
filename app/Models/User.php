@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password',
         'google_id',
         'phone', // Ajouté pour l'authentification par téléphone
-        'user_type', // 'buyer', 'seller', 'admin'
+        'role', // 'buyer', 'seller', 'admin'
         'rating', // Pour le système de notation
         'address',
         'city',
@@ -52,6 +52,12 @@ class User extends Authenticatable
     public function routeNotificationForTwilio()
     {
         return $this->phone;
+    }
+
+    // Accessor to use role as user_type for compatibility
+    public function getUserTypeAttribute()
+    {
+        return $this->role ?? 'buyer';
     }
 
  // Relation : Un utilisateur peut avoir plusieurs annonces

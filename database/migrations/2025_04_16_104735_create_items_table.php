@@ -19,12 +19,11 @@ return new class extends Migration
             $table->string('taille');
             $table->decimal('price', 10, 2);
             $table->string('category');
-            $table->string('etat'); // "Neuf avec étiquette", "Très bon état", "État correct"
+            $table->string('condition'); // "new_with_tags", "excellent", "good", "fair", "poor"
             $table->json('images')->nullable()->comment('Tableau des chemins des images (max 5)');
             $table->boolean('is_sold')->default(false); // true (vendu), false (disponible)
-            // $table->string('delivery_method')->default('meetup'); // meetup (Remise en main propre) ou carrier (Livraison par un transporteur)
+            $table->string('delivery_method')->default('meetup'); // meetup (Remise en main propre) ou carrier (Livraison par un transporteur)
             $table->string('meetup_location')->nullable(); //"Place du Souvenir, Cotonou"
-            $table->timestamp('created_at')->nullable();
             $table->timestamps();
         });
     }

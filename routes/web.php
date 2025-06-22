@@ -48,6 +48,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
     });
 
+    // 🔹 Admin Dashboard and Management (Admin uniquement)
+    Route::middleware('can:isAdmin')->group(function () {
+        Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/admin/users', [App\Http\Controllers\AdminController::class, 'users'])->name('admin.users');
+        Route::get('/admin/items', [App\Http\Controllers\AdminController::class, 'items'])->name('admin.items');
+    });
+
     // 🔹 Gestion des catégories (Admin uniquement)
     Route::middleware('can:isAdmin')->group(function () {
         Route::get('/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
@@ -72,6 +79,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 🔹 Messagerie interne
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+
+    // 🔹 API pour les détails des produits (AJAX)
+    Route::get('/api/items/{item}', [ItemController::class, 'apiShow'])->name('api.items.show');
 
     // 🔹 Gestion des avis
     Route::get('/reviews/{item}', [ReviewController::class, 'index'])->name('reviews.index');
@@ -112,3 +122,23 @@ Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';
+
+// Simple sell form (no auth required for testing)
+Route::get('/sell', function () {
+    return view('sell-form');
+})->name('sell.form');
+Route::post('/sell', [ItemController::class, 'store'])->name('sell.store');
+
+// Test admin login route
+Route::get('/test-admin', function () {
+    // Find admin user
+    $user = \App\Models\User::where('email', 'admin@beninocccaz.com')->first();
+
+    if ($user) {
+        \Illuminate\Support\Facades\Auth::login($user);
+        return redirect()->route('admin.dashboard');
+    }
+
+    return 'Admin user not found. Please run: php artisan migrate';
+})->name('test.admin');

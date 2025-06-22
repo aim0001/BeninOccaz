@@ -15,15 +15,17 @@ class ItemController extends Controller
      */
 
      public function latest()
-{
-    $items = Item::latest()->limit(10)->get(); // Récupère les 10 derniers articles
-    return view('index', compact('items'));
-}
+    {
+        // Récupère les 10 derniers articles approuvés
+        $items = Item::approved()->available()->latest()->limit(10)->get();
+        return view('index', compact('items'));
+    }
 
     public function index()
     {
-         $items = Item::available()
-
+        // Affiche seulement les articles approuvés pour les utilisateurs normaux
+        $items = Item::approved()
+            ->available()
             ->with('user')
             ->latest()
             ->paginate(12);
@@ -50,13 +52,14 @@ class ItemController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
+            'taille' => 'required|string|max:50',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:255',
-            'condition' => 'required|in:' . implode(',', array_keys(Item::CONDITIONS)),
+            'condition' => 'required|in:new_with_tags,excellent,good,fair,poor',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'delivery_method' => 'required|in:' . implode(',', array_keys(Item::DELIVERY_METHODS)),
+            'delivery_method' => 'required|in:meetup,carrier',
             'meetup_location' => 'nullable|string|max:255'
-            
+
         ]);
 
         // Traitement des images
@@ -68,20 +71,27 @@ class ItemController extends Controller
             }
         }
 
-        // Création de l'annonce
+        // Création de l'annonce (en attente d'approbation par défaut)
         $item = Item::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id() ?? 1, // Default to user ID 1 if not authenticated
             'title' => $validated['title'],
             'description' => $validated['description'],
+            'taille' => $validated['taille'],
             'price' => $validated['price'],
             'category' => $validated['category'],
             'condition' => $validated['condition'],
             'images' => $imagePaths,
             'delivery_method' => $validated['delivery_method'],
             'meetup_location' => $validated['meetup_location'] ?? null,
+            'approval_status' => 'pending', // En attente d'approbation
         ]);
 
-        return redirect()->route('items.show', $item)->with('success', 'Annonce créée avec succès!');
+        // Check if this is from our simple form
+        if ($request->route()->getName() === 'sell.store') {
+            return redirect()->route('sell.form')->with('success', 'Votre annonce a été soumise avec succès! Elle sera visible après validation par un administrateur.');
+        }
+
+        return redirect()->route('items.show', $item)->with('success', 'Annonce soumise avec succès! Elle sera visible après validation par un administrateur.');
     }
 
     /**
@@ -91,12 +101,39 @@ class ItemController extends Controller
     {
         return view('product-detail', [
             'item' => $item->load('user'),
-            'similarItems' => Item::available()
+            'similarItems' => Item::approved()
+                                ->available()
                                 ->where('category', $item->category)
                                 ->where('id', '!=', $item->id)
                                 ->inRandomOrder()
                                 ->limit(4)
                                 ->get()
+        ]);
+    }
+
+    /**
+     * API endpoint to get item details for AJAX requests
+     */
+    public function apiShow(Item $item)
+    {
+        // Only return approved items for security
+        if ($item->approval_status !== 'approved') {
+            return response()->json(['error' => 'Item not found'], 404);
+        }
+
+        return response()->json([
+            'id' => $item->id,
+            'title' => $item->title,
+            'description' => $item->description,
+            'price' => $item->price,
+            'condition' => $item->condition,
+            'category' => $item->category,
+            'images' => $item->images,
+            'user_id' => $item->user_id,
+            'user' => [
+                'id' => $item->user->id,
+                'name' => $item->user->name,
+            ]
         ]);
     }
 

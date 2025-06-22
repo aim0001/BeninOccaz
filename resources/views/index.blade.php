@@ -1,7 +1,7 @@
 <x-app-layout> <!-- Slider --> <section class="section-slide"> <div class="wrap-slick1"> <div class="slick1"> <div
 	class="item-slick1" style="background-image: url(images/slide-01.jpg);">
 
-	<div class="card"> <h2>Prêt à faire le tri dans votre placard ?</h2> <a href="{{route('items.create')}}">Commencer à
+	<div class="card"> <h2>Prêt à faire le tri dans votre placard ?</h2> <a href="{{route('sell.form')}}">Commencer à
 		vendre</a> </div> </div> </div> </div> </section> <!-- Banner --> <div class="sec-banner bg0 p-t-80 p-b-50">
 		<div class="container"> <div class="row justify-content-center"> <!-- Femme --> <div class="col-md-4 col-sm-6
 			col-10 p-b-30"> <div class="block1 wrap-pic-w"> <img src="images/women.jpg" alt="IMG-BANNER"

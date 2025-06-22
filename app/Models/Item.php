@@ -20,12 +20,17 @@ class Item extends Model
         'user_id',
         'title',
         'description',
+        'taille',
         'price',
         'category',
         'condition',
         'images',
         'delivery_method',
         'meetup_location',
+        'approval_status',
+        'admin_notes',
+        'approved_at',
+        'approved_by',
     ];
 
     /**
@@ -37,6 +42,7 @@ class Item extends Model
         'images' => 'array',
         'price' => 'decimal:2',
         'is_sold' => 'boolean',
+        'approved_at' => 'datetime',
     ];
 
     /**
@@ -157,8 +163,89 @@ class Item extends Model
         return $query->where('delivery_method', $method);
     }
     public function featured()
-{
-    return $this->hasOne(FeaturedItem::class);
-}
+    {
+        return $this->hasOne(FeaturedItem::class);
+    }
+
+    /**
+     * Relation avec l'admin qui a approuvé l'article
+     */
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Scope pour les articles approuvés
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('approval_status', 'approved');
+    }
+
+    /**
+     * Scope pour les articles en attente d'approbation
+     */
+    public function scopePending($query)
+    {
+        return $query->where('approval_status', 'pending');
+    }
+
+    /**
+     * Scope pour les articles rejetés
+     */
+    public function scopeRejected($query)
+    {
+        return $query->where('approval_status', 'rejected');
+    }
+
+    /**
+     * Vérifie si l'article est approuvé
+     */
+    public function isApproved(): bool
+    {
+        return $this->approval_status === 'approved';
+    }
+
+    /**
+     * Vérifie si l'article est en attente
+     */
+    public function isPending(): bool
+    {
+        return $this->approval_status === 'pending';
+    }
+
+    /**
+     * Vérifie si l'article est rejeté
+     */
+    public function isRejected(): bool
+    {
+        return $this->approval_status === 'rejected';
+    }
+
+    /**
+     * Approuve l'article
+     */
+    public function approve($adminId, $notes = null): void
+    {
+        $this->update([
+            'approval_status' => 'approved',
+            'approved_by' => $adminId,
+            'approved_at' => now(),
+            'admin_notes' => $notes,
+        ]);
+    }
+
+    /**
+     * Rejette l'article
+     */
+    public function reject($adminId, $notes = null): void
+    {
+        $this->update([
+            'approval_status' => 'rejected',
+            'approved_by' => $adminId,
+            'admin_notes' => $notes,
+        ]);
+    }
 
 }
